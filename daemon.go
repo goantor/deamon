@@ -12,6 +12,8 @@ var (
 	once          sync.Once
 )
 
+type RegisterRuleFunc func(manager *DefaultDaemonManager)
+
 func init() {
 	DaemonManager = NewDefaultDaemonManager()
 }
