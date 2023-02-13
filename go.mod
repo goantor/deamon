@@ -6,7 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.8.2
 	github.com/goantor/logs v0.0.4
 	github.com/goantor/pr v0.0.1
-	github.com/goantor/x v0.0.8
+	github.com/goantor/x v0.0.10
 	github.com/robfig/cron v1.2.0
 )
 
