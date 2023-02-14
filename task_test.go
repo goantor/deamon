@@ -34,7 +34,7 @@ func TestTask(t *testing.T) {
 }
 
 func TestQueueTask(t *testing.T) {
-	RegisterTask("testing", QueueKind, func(ctx x.Context, name string, exit Exit) {
+	RegisterTask("queue testing", QueueKind, func(ctx x.Context, name string, exit Exit) {
 		rs := rand.New(rand.NewSource(time.Now().UnixNano()))
 		n := rs.Intn(15)
 		t.Logf("run %d times\n", n)

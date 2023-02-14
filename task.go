@@ -74,10 +74,14 @@ type taskBase struct {
 	exit    Exit
 }
 
-func (t *taskBase) resetContent() {
+func BuildContext() x.Context {
 	gtx := &gin.Context{}
 	log := logs.New("PUT", fmt.Sprintf("%s::%s", "cron", t.name), "")
-	t.ctx = x.NewContextWithGin(gtx, log)
+	return x.NewContextWithGin(gtx, log)
+}
+
+func (t *taskBase) resetContent() {
+	t.ctx = BuildContext()
 }
 
 func (t *taskBase) wait() {
