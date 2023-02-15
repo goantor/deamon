@@ -43,9 +43,11 @@ func RegisterTask(name string, kind Kind, handler TaskHandler, opts *Options) {
 
 func Start() {
 	registry.doRange(func(name string, task ITask) {
-		pr.PrintGreen("cron %s running...\n", name)
-		task.Trigger()
-		pr.PrintGreen("cron %s running finished\n", name)
+		go func() {
+			pr.PrintGreen("cron %s running...\n", name)
+			task.Trigger()
+			pr.PrintGreen("cron %s running finished\n", name)
+		}()
 	})
 }
 
@@ -144,13 +146,6 @@ func (t *Task) watchLoop() {
 	osc := make(chan os.Signal, 1)
 	signal.Notify(osc, syscall.SIGTERM, syscall.SIGINT)
 
-	//tick := time.Tick(t.opts.Interval)
-	//time.Sleep()
-
-	//t.wait()
-
-	// 判断执行完成, 然后时间10秒
-	//stop:
 	go t.next()
 
 	// 不执行了
@@ -167,18 +162,10 @@ stop:
 
 func (t *Task) next() {
 	for { // 阻塞了
-		fmt.Printf("wait %d seconds\n", t.opts.Interval)
 		time.Sleep(t.opts.Interval) // 每十秒 完成一次 如果未完成 那就得完成后再继续执行
 		t.wait()
 
-		fmt.Println("do new task")
-		//select {
-		//err := <-t.exit
 		go t.distribute()
-		//break
-		//case <-osc:
-		//	t.ctx.Info(fmt.Sprintf("cron %s got signal do exit", t.name), nil)
-		//	break stop
 	}
 }
 
