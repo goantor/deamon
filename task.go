@@ -89,7 +89,7 @@ func (t *taskBase) resetContent() {
 func (t *taskBase) wait() {
 	if err := <-t.exit; err != nil {
 		t.ctx.Error(fmt.Sprintf("cron %s found error", t.name), x.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
@@ -99,7 +99,12 @@ func (t *taskBase) wait() {
 
 func (t *taskBase) catch() {
 	if err := recover(); err != nil {
-		t.exit <- fmt.Errorf("cron %s catch error %v", t.name, err)
+		switch err.(type) {
+		case error:
+			t.exit <- fmt.Errorf("cron %s catch error %v", t.name, err.(error).Error())
+		default:
+			t.exit <- fmt.Errorf("cron %s catch error %v", t.name, err)
+		}
 	}
 }
 
@@ -180,7 +185,7 @@ stop:
 		case err := <-t.exit: // queue  -> listen queue
 			if err != nil {
 				t.ctx.Error(fmt.Sprintf("cron %s watch exit", t.name), x.H{
-					"error": err,
+					"error": err.Error(),
 				})
 			}
 
